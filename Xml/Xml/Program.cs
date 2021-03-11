@@ -7,16 +7,6 @@ using System.Xml.Linq;
 
 namespace Xml
 {
-    class Stat
-    {
-        public int CdsCount { get; set; }
-        public decimal PricesSum { get; set; }
-        public List<string> Countries { get; set; } = new List<string>();
-        public int MinYear { get; set; } = int.MaxValue;
-        public int MaxYear { get; set; }
-        
-    }
-    
     /*
      * <ARTIST>Dolly Parton</ARTIST>
         <COUNTRY>USA</COUNTRY>
@@ -26,6 +16,7 @@ namespace Xml
      */
     class Program
     {
+        
         static void Main(string[] args)
         {
             var doc = XDocument.Load(@"Stat.xml");
@@ -38,8 +29,7 @@ namespace Xml
                 foreach (var item in items)
                 {
                     stat.CdsCount++;
-                    Decimal.TryParse(item.Element("PRICE")?.Value.Replace(".", ","), out decimal sum); // Да, тут  не все так просто, нужно универсальный парсер писать
-                    stat.PricesSum += sum;
+                    stat.PricesSum += DoubleParser.ParseDouble(item.Element("PRICE")?.Value);
                     Int32.TryParse(item.Element("YEAR")?.Value, out int year);
                     stat.MinYear = Math.Min(stat.MinYear, year);
                     stat.MaxYear = Math.Max(stat.MaxYear, year);
